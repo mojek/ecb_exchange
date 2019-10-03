@@ -14,7 +14,9 @@ class Currency(models.Model):
 
 class Exchange(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
+    currency = models.ForeignKey(
+        Currency, on_delete=models.CASCADE, related_name="exchanges"
+    )
     exchange_date = models.DateField()
     rate = models.DecimalField(max_digits=10, decimal_places=4)
 
