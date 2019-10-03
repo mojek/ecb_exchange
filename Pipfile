@@ -10,6 +10,7 @@ black = "*"
 [packages]
 django = "==2.2.6"
 psycopg2-binary = "==2.8.3"
+djangorestframework = "==3.10.3"
 
 [requires]
 python_version = "3.7"

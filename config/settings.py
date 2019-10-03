@@ -37,8 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    #local
     'core.apps.CoreConfig',
-    'exchange.apps.ExchangeConfig'
+    'exchange.apps.ExchangeConfig',
+
+    #3rd party
+    'rest_framework'
+    
 ]
 
 MIDDLEWARE = [
