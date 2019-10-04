@@ -8,6 +8,9 @@ class Currency(models.Model):
     short_name = models.CharField(max_length=3)
     rss_url = models.URLField(max_length=200)
 
+    class Meta:
+        verbose_name_plural = "Currencies"
+
     def __str__(self):
         return f"{self.name} ({self.short_name})"
 
