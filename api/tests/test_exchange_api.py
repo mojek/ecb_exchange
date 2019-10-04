@@ -6,6 +6,10 @@ from rest_framework.test import APIClient
 from exchange.models import Exchange, Currency
 from api.serializers import ExchangeSerializer
 
+from django.conf import settings
+
+settings.CELERY_TASK_ALWAYS_EAGER = True
+
 
 class PublicExchangeApiTest(TestCase):
     """Test the publicity available exchange api"""

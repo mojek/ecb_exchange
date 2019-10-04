@@ -14,6 +14,8 @@ djangorestframework = "==3.10.3"
 drf-extensions = "==0.5.0"
 celery = "==4.3.0"
 redis = "==3.3.8"
+beautifulsoup4 = "==4.8.0"
+lxml = "*"
 
 [requires]
 python_version = "3.7"
