@@ -16,32 +16,56 @@ class PublicExchangeApiTest(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-
-    def test_retrive_exchange(self):
-        currency_us = Currency.objects.create(
+        self.currency_us = Currency.objects.create(
             name="US dolar",
             short_name="USD",
             rss_url="https://www.ecb.europa.eu/rss/fxref-usd.html",
         )
 
-        currency_pl = Currency.objects.create(
+        self.currency_pl = Currency.objects.create(
             name="Polish zloty",
             short_name="PLN",
             rss_url="https://www.ecb.europa.eu/rss/fxref-pln.html",
         )
 
+    def test_retrive_exchange(self):
         exchange1 = Exchange.objects.create(
-            currency=currency_us, exchange_date="2019-10-01", rate="1.0925"
+            currency=self.currency_us, exchange_date="2019-10-01", rate="1.0925"
         )
         exchange2 = Exchange.objects.create(
-            currency=currency_us, exchange_date="2019-10-02", rate="2.0925"
+            currency=self.currency_us, exchange_date="2019-10-02", rate="2.0925"
         )
         exchange3 = Exchange.objects.create(
-            currency=currency_pl, exchange_date="2019-10-03", rate="3.0925"
+            currency=self.currency_pl, exchange_date="2019-10-03", rate="3.0925"
         )
 
-        r_url = reverse("exchange:exchanges-list", args=[currency_us.id])
+        r_url = reverse("exchange:exchanges-list", args=[self.currency_us.id])
         res = self.client.get(r_url)
-        serializer = ExchangeSerializer(currency_us.exchanges.all(), many=True)
+        serializer = ExchangeSerializer(self.currency_us.exchanges.all(), many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+
+    def test_save_exchange(self):
+        """Send exchange payload to save with success"""
+        payload = dict(
+            currency=self.currency_us.id, exchange_date="2019-10-01", rate="1.0925"
+        )
+        r_url = reverse("exchange:exchanges-list", args=[self.currency_us.id])
+        self.client.post(r_url, payload)
+        exists = self.currency_us.exchanges.filter(
+            exchange_date=payload["exchange_date"]
+        ).exists()
+        self.assertTrue(exists)
+
+    def test_post_same_exchange_with_fail(self):
+        """Test send exchange to the currency with same date fail to"""
+        payload = dict(
+            currency=self.currency_us.id, exchange_date="2019-10-01", rate="1.0925"
+        )
+        r_url = reverse("exchange:exchanges-list", args=[self.currency_us.id])
+        res1 = self.client.post(r_url, payload)
+        res2 = self.client.post(r_url, payload)
+        exchanges = self.currency_us.exchanges.all()
+        self.assertEqual(len(exchanges), 1)
+        self.assertEqual(res1.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(res2.status_code, status.HTTP_400_BAD_REQUEST)

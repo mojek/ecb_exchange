@@ -23,5 +23,9 @@ class Exchange(models.Model):
     exchange_date = models.DateField()
     rate = models.DecimalField(max_digits=10, decimal_places=4)
 
+    class Meta:
+        unique_together = ["currency", "exchange_date"]
+
     def __str__(self):
         return f"({self.exchange_date}): EUR 1 = {self.currency.short_name} {self.rate}"
+
