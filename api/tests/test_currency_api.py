@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
+from django.test.client import RequestFactory
 from rest_framework.test import APIClient
 
 from exchange.models import Currency
@@ -10,10 +11,11 @@ CURRENCY_URL = reverse("exchange:currency-list")
 
 
 class PublicCurrencyApiTest(TestCase):
-    """Test the publicity available exchange api"""
+    """Test the publicity available currency api"""
 
     def setUp(self):
         self.client = APIClient()
+        self.factory = RequestFactory()
 
     def test_retrive_currencies(self):
         Currency.objects.create(
@@ -28,8 +30,11 @@ class PublicCurrencyApiTest(TestCase):
         )
 
         res = self.client.get(CURRENCY_URL)
+        request = self.factory.get(CURRENCY_URL)
         currencies = Currency.objects.all().order_by("-name")
-        serializer = CurrencySerializer(currencies, many=True)
+        serializer = CurrencySerializer(
+            currencies, many=True, context={"request":request}
+        )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
