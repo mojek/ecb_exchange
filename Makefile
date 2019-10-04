@@ -6,6 +6,12 @@ enter:
 test:
 	$(ENTER_DJANGO) python manage.py test
 
+makemigrations:
+	$(ENTER_DJANGO) python manage.py makemigrations
+
+migrate:
+	$(ENTER_DJANGO) python manage.py migrate
+
 stop:
 	docker-compose stop
 
