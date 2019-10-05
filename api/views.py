@@ -13,7 +13,7 @@ class CurrencyViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         model_data = serializer.save()
         fetch_rss_data.delay(model_data.id)
 
-    
+
 class ExchangeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Exchange.objects.all()
     serializer_class = ExchangeSerializer
