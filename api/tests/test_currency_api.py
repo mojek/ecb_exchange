@@ -49,9 +49,11 @@ class PublicCurrencyApiTest(TestCase):
             short_name="PLN",
             rss_url="https://www.ecb.europa.eu/rss/fxref-pln.html",
         )
-        self.client.post(CURRENCY_URL, payload)
+        res = self.client.post(CURRENCY_URL, payload)
         exists = Currency.objects.filter(name=payload["name"]).exists()
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertTrue(exists)
+        
 
     def test_create_currency_invalid(self):
         """Test creating a new currency with invalid payload"""
