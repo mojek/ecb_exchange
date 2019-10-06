@@ -11,7 +11,8 @@ class FetcherRssTest(TestCase):
             short_name="USD",
             rss_url="https://www.ecb.europa.eu/rss/fxref-usd.html",
         )
-        currency = fetch_rss_data(currency.id)
+        fetch_rss_data(currency.id)
+        currency.refresh_from_db()
         self.assertIsNotNone(currency.last_fetch)
 
     def test_fetch_rss_data_fails(self):
@@ -19,5 +20,6 @@ class FetcherRssTest(TestCase):
         currency = Currency.objects.create(
             name="US dolar", short_name="USD", rss_url="http://mojek_wrong_domain.com"
         )
-        currency = fetch_rss_data(currency.id)
+        fetch_rss_data(currency.id)
+        currency.refresh_from_db()
         self.assertIsNone(currency.last_fetch)
