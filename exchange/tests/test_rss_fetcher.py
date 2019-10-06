@@ -1,5 +1,5 @@
 from django.test import TestCase
-from exchange.tasks import fetch_rss_data
+from exchange.tasks import fetch_rss_data, periodic_fetcher
 from exchange.models import Currency
 
 
@@ -23,3 +23,20 @@ class FetcherRssTest(TestCase):
         fetch_rss_data(currency.id)
         currency.refresh_from_db()
         self.assertIsNone(currency.last_fetch)
+
+    def test_periodic_fetcher(self):
+        """Test fetch all Currencies at once"""
+        Currency.objects.create(
+            name="US dolar",
+            short_name="USD",
+            rss_url="https://www.ecb.europa.eu/rss/fxref-usd.html",
+        )
+        Currency.objects.create(
+            name="Polish zloty",
+            short_name="PLN",
+            rss_url="https://www.ecb.europa.eu/rss/fxref-pln.html",
+        )
+
+        periodic_fetcher()
+        fetched = Currency.objects.filter(last_fetch__isnull=False)
+        self.assertEqual(fetched.count(), 2)

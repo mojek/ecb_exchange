@@ -4,6 +4,7 @@ from django.db import models
 from bs4 import BeautifulSoup
 import urllib.request
 from urllib.error import URLError
+from django.core.exceptions import ValidationError
 
 
 class Currency(models.Model):
@@ -11,7 +12,8 @@ class Currency(models.Model):
     name = models.CharField(max_length=255)
     short_name = models.CharField(max_length=3)
     rss_url = models.URLField(max_length=200)
-    last_fetch = models.DateField(null=True, blank=True) 
+    last_fetch = models.DateField(null=True, blank=True)
+
     class Meta:
         verbose_name_plural = "Currencies"
 
@@ -23,18 +25,21 @@ class Currency(models.Model):
             source = urllib.request.urlopen(self.rss_url).read()
         except URLError:
             return None
-        else:    
+        else:
             doc = BeautifulSoup(source, "lxml")
             for item in doc.findAll("item"):
                 rate = item.find("cb:value").text
                 date = item.find("dc:date").text.split("T")[0]
-                exchange = Exchange.objects.create(
-                    currency=self, exchange_date=date, rate=rate
-                )
-            self.last_fetch =  datetime.date.today()
+                exchange = Exchange(currency=self, exchange_date=date, rate=rate)
+                try:
+                    exchange.full_clean()
+                except ValidationError:
+                    continue
+                else:
+                    exchange.save()
+            self.last_fetch = datetime.date.today()
             self.save()
-               
-        
+
 
 class Exchange(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

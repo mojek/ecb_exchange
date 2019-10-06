@@ -48,6 +48,25 @@ services:
     - DB_NAME=django_db
     - DB_USER=postgres_user
     - DB_PASS=supersecret
+  
+  celery_beat:
+    build:
+      context: .
+    entrypoint: celery
+    command: -A  config.celery beat -l info
+    volumes:
+    - .:/code
+    links:
+    - redis
+    depends_on:
+    - redis
+    - db
+    environment:
+    - DEBUG=1
+    - DB_HOST=db
+    - DB_NAME=django_db
+    - DB_USER=postgres_user
+    - DB_PASS=supersecret     
        
 
 volumes:

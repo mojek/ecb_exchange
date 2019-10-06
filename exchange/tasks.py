@@ -8,4 +8,9 @@ from exchange.models import Currency, Exchange
 def fetch_rss_data(currency_id):
     currency = Currency.objects.get(id=currency_id)
     currency.fetch_rss_from_ecb()
-    return currency.last_fetch
+
+
+@shared_task
+def periodic_fetcher():
+    currencies = Currency.objects.all()
+    [currency.fetch_rss_from_ecb() for currency in currencies]

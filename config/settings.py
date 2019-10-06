@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-
+from celery.schedules import crontab
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -139,7 +139,15 @@ CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
-
+CELERY_TIMEZONE = 'Europe/Warsaw'
+CELERY_BEAT_SCHEDULE = {
+    'fetch_Rss': {
+        'task': 'exchange.tasks.periodic_fetcher',
+        'schedule': crontab(hour=15),
+        #'schedule': crontab(minute='*/1'),
+        
+    },
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
