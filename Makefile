@@ -12,6 +12,8 @@ makemigrations:
 migrate:
 	$(ENTER_DJANGO) python manage.py migrate
 
+createsuperuser:
+	$(ENTER_DJANGO) python manage.py createsuperuser
 stop:
 	docker-compose stop
 
