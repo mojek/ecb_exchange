@@ -32,9 +32,7 @@ class PrivateCurrencyApiTest(TestCase):
     """Test the publicity available currency api"""
 
     def setUp(self):
-        self.user = get_user_model().objects.create_user(
-            "test@mojek.pl", "pass123"
-        )
+        self.user = get_user_model().objects.create_user("test@mojek.pl", "pass123")
         self.client = APIClient()
         self.client.force_authenticate(self.user)
         self.factory = RequestFactory()

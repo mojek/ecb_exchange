@@ -11,6 +11,7 @@ from django.conf import settings
 
 settings.CELERY_TASK_ALWAYS_EAGER = True
 
+
 class PublicExchangeApiTest(TestCase):
     def test_(self):
         self.currency_us = Currency.objects.create(
@@ -22,16 +23,15 @@ class PublicExchangeApiTest(TestCase):
             currency=self.currency_us.id, exchange_date="2019-10-01", rate="1.0922"
         )
         r_url = reverse("exchange:exchanges-list", args=[self.currency_us.id])
-        res  = self.client.post(r_url, payload)
+        res = self.client.post(r_url, payload)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class PrivateExchangeApiTest(TestCase):
     """Test the private available exchange api"""
-   
+
     def setUp(self):
-        self.user = get_user_model().objects.create_user(
-            "test@mojek.pl", "pass123"
-        )
+        self.user = get_user_model().objects.create_user("test@mojek.pl", "pass123")
         self.client = APIClient()
         self.client.force_authenticate(self.user)
         self.currency_us = Currency.objects.create(
