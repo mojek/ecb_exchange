@@ -13,11 +13,11 @@ class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
         model = Currency
         fields = ("id", "name", "short_name", "rss_url", "last_fetch", "exchange_url")
-        read_only_fields = ["id", "exchange_url", "last_fetch"]
+        read_only_fields = ("id", "exchange_url", "last_fetch")
 
 
 class ExchangeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Exchange
         fields = ("id", "currency", "exchange_date", "rate")
-        read_only_fields = ("id", "currency")
+        read_only_fields = ("id",)
