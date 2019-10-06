@@ -8,4 +8,4 @@ from exchange.models import Currency, Exchange
 def fetch_rss_data(currency_id):
     currency = Currency.objects.get(id=currency_id)
     currency.fetch_rss_from_ecb()
-    return currency
+    return currency.last_fetch
