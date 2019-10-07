@@ -16,7 +16,7 @@ make migrate (or docker-compose exec web python manage.py migrate)
 **Create superuser:**  
 make createsuperuser (or docker-compose exec web python manage.py createsuperuser)
 
-**Log in**
+**Log in**  
 Open http://localhost:8000/api/v1/currencies/   
 Click the upper right corner log in and log in with your superuser.
 
